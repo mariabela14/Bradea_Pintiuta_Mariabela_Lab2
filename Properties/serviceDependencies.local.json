@@ -1,0 +1,8 @@
+{
+  "dependencies": {
+    "mssql1": {
+      "type": "mssql.local",
+      "connectionId": "ConnectionStrings:Bradea_Pintiuta_Mariabela_Lab2Context"
+    }
+  }
+}
