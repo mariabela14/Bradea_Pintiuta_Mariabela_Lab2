@@ -13,6 +13,7 @@
 <div class="row">
     <div class="col-md-4">
         <form method="post">
+
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
             <input type="hidden" asp-for="Book.ID" />
@@ -25,7 +26,9 @@
 
             <div class="form-group">
                 <label asp-for="Book.AuthorID" class="control-label">Author</label>
-                <select asp-for="Book.AuthorID" class="form-control" asp-items="ViewBag.AuthorID">
+                <select asp-for="Book.AuthorID"
+                        class="form-control"
+                        asp-items="ViewBag.AuthorID">
                     <option value="">-- Select Author --</option>
                 </select>
                 <span asp-validation-for="Book.AuthorID" class="text-danger"></span>
@@ -45,9 +48,40 @@
 
             <div class="form-group">
                 <label asp-for="Book.PublisherID" class="control-label">Publisher Name</label>
-                <select asp-for="Book.PublisherID" class="form-control" asp-items="ViewBag.PublisherID">
+                <select asp-for="Book.PublisherID"
+                        class="form-control"
+                        asp-items="ViewBag.PublisherID">
                 </select>
                 <span asp-validation-for="Book.PublisherID" class="text-danger"></span>
+            </div>
+
+            <!-- CATEGORII -->
+            <div class="form-group">
+                <div class="table">
+                    <table>
+                        <tr>
+                            @{
+                                int cnt = 0;
+
+                                foreach (var cat in Model.AssignedCategoryDataList)
+                                {
+                                    if (cnt++ % 3 == 0)
+                                    {
+                                        @:</tr><tr>
+                                    }
+
+                                    @:<td>
+                                        <input type="checkbox"
+                                               name="selectedCategories"
+                                               value="@cat.CategoryID"
+                                               @(Html.Raw(cat.Assigned ? "checked=\"checked\"" : "")) />
+                                        @cat.CategoryID @: @cat.Name
+                                    @:</td>
+                                }
+                            }
+                        </tr>
+                    </table>
+                </div>
             </div>
 
             <div class="form-group">

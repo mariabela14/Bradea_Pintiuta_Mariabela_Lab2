@@ -8,7 +8,7 @@ namespace Bradea_Pintiuta_Mariabela_Lab2.Models
         public int ID { get; set; }
 
         [Display(Name = "Book Title")]
-        public string Title { get; set; }
+        public string Title { get; set; } = string.Empty;
 
         [Column(TypeName = "decimal(6, 2)")]
         public decimal Price { get; set; }
@@ -21,5 +21,7 @@ namespace Bradea_Pintiuta_Mariabela_Lab2.Models
 
         public int? AuthorID { get; set; }
         public Author? Author { get; set; }
+
+        public ICollection<BookCategory> BookCategories { get; set; } = new List<BookCategory>();
     }
 }

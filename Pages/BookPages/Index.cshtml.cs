@@ -1,8 +1,8 @@
+using Bradea_Pintiuta_Mariabela_Lab2.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Bradea_Pintiuta_Mariabela_Lab2.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace Bradea_Pintiuta_Mariabela_Lab2.Pages.BookPages;
 
@@ -15,31 +15,65 @@ public class IndexModel : PageModel
         _context = context;
     }
 
-    public IList<Book> Book { get; set; } = default!;
+    public IList<Book> Book { get; set; } = new List<Book>();
 
-    public SelectList Authors { get; set; } = default!;
+    public BookData BookD { get; set; } = new BookData();
+
+    public int BookID { get; set; }
+
+    public int CategoryID { get; set; }
 
     [BindProperty(SupportsGet = true)]
     public int? AuthorID { get; set; }
 
-    public async Task OnGetAsync()
+    public SelectList Authors { get; set; } = default!;
+
+    public async Task OnGetAsync(int? id, int? categoryID)
     {
+        var authorList = _context.Author.Select(x => new
+        {
+            x.ID,
+            FullName = x.LastName + " " + x.FirstName
+        });
+
         Authors = new SelectList(
-            await _context.Author.ToListAsync(),
+            authorList,
             "ID",
-            "FirstName",
+            "FullName",
             AuthorID);
 
-        var books = _context.Book
-            .Include(b => b.Publisher)
+        BookD = new BookData();
+
+        var booksQuery = _context.Book
             .Include(b => b.Author)
+            .Include(b => b.Publisher)
+            .Include(b => b.BookCategories)
+                .ThenInclude(b => b.Category)
+            .AsNoTracking()
+            .OrderBy(b => b.Title)
             .AsQueryable();
 
         if (AuthorID.HasValue)
         {
-            books = books.Where(b => b.AuthorID == AuthorID);
+            booksQuery = booksQuery
+                .Where(b => b.AuthorID == AuthorID.Value)
+                .OrderBy(b => b.Title);
         }
 
-        Book = await books.ToListAsync();
+        BookD.Books = await booksQuery.ToListAsync();
+
+        Book = BookD.Books.ToList();
+
+        if (id != null)
+        {
+            BookID = id.Value;
+
+            Book book = BookD.Books
+                .Where(i => i.ID == id.Value)
+                .Single();
+
+            BookD.Categories = book.BookCategories
+                .Select(s => s.Category);
+        }
     }
 }

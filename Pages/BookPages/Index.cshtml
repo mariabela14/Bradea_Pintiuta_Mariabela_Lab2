@@ -39,29 +39,51 @@
             <th>
                 @Html.DisplayNameFor(model => model.Book[0].Publisher.PublisherName)
             </th>
+            <th>
+                Categories
+            </th>
             <th></th>
         </tr>
     </thead>
 
     <tbody>
-        @foreach (var item in Model.Book)
+        @foreach (var item in Model.BookD.Books)
         {
             <tr>
                 <td>
                     @Html.DisplayFor(modelItem => item.Title)
                 </td>
+
                 <td>
                     @item.Author?.FirstName @item.Author?.LastName
                 </td>
+
                 <td>
                     @Html.DisplayFor(modelItem => item.Price)
                 </td>
+
                 <td>
                     @Html.DisplayFor(modelItem => item.PublishingDate)
                 </td>
+
                 <td>
-                    @Html.DisplayFor(modelItem => item.Publisher.PublisherName)
+                    @if (item.Publisher != null)
+                    {
+                        @item.Publisher.PublisherName
+                    }
                 </td>
+
+                <td>
+                    @if (item.BookCategories != null)
+                    {
+                        foreach (var category in item.BookCategories)
+                        {
+                            @category.Category.ID @: @category.Category.CategoryName
+                            <br />
+                        }
+                    }
+                </td>
+
                 <td>
                     <a asp-page="./Edit" asp-route-id="@item.ID">Edit</a> |
                     <a asp-page="./Details" asp-route-id="@item.ID">Details</a> |
