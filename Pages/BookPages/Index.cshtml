@@ -11,12 +11,27 @@
     <a asp-page="Create">Create New</a>
 </p>
 
+<form method="get">
+    <p>
+        <label>Find by Book Title / Author Name:</label>
+        <input type="text" name="searchString" value="@Model.CurrentFilter" />
+        <input type="submit" value="Search" class="btn btn-primary" />
+
+        @if (!String.IsNullOrEmpty(Model.CurrentFilter))
+        {
+            <a asp-page="./Index">Back to full List</a>
+        }
+    </p>
+</form>
+
 <form>
     <p>
         <label>Choose an Author:</label>
+
         <select asp-for="AuthorID" asp-items="Model.Authors">
             <option value="">All Authors</option>
         </select>
+
         <input type="submit" value="Filter" class="btn btn-primary" />
     </p>
 </form>
@@ -25,23 +40,35 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Book[0].Title)
+                <a asp-page="./Index"
+                   asp-route-sortOrder="@Model.TitleSort">
+                    @Html.DisplayNameFor(model => model.Book[0].Title)
+                </a>
             </th>
+
             <th>
-                Author
+                <a asp-page="./Index"
+                   asp-route-sortOrder="@Model.AuthorSort">
+                    Author
+                </a>
             </th>
+
             <th>
                 @Html.DisplayNameFor(model => model.Book[0].Price)
             </th>
+
             <th>
                 @Html.DisplayNameFor(model => model.Book[0].PublishingDate)
             </th>
+
             <th>
                 @Html.DisplayNameFor(model => model.Book[0].Publisher.PublisherName)
             </th>
+
             <th>
                 Categories
             </th>
+
             <th></th>
         </tr>
     </thead>
@@ -78,7 +105,8 @@
                     {
                         foreach (var category in item.BookCategories)
                         {
-                            @category.Category.ID @: @category.Category.CategoryName
+                            @category.Category.ID
+                            @: @category.Category.CategoryName
                             <br />
                         }
                     }
