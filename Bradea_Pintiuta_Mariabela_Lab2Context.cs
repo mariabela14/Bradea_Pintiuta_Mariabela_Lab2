@@ -9,4 +9,6 @@ public class Bradea_Pintiuta_Mariabela_Lab2Context(DbContextOptions<Bradea_Pinti
 
     public DbSet<Bradea_Pintiuta_Mariabela_Lab2.Models.Author> Author { get; set; } = default!;
     public DbSet<Category> Category { get; set; } = default!;
+    public DbSet<Member> Member { get; set; } = default!;
+    public DbSet<Borrowing> Borrowing { get; set; } = default!;
 }
