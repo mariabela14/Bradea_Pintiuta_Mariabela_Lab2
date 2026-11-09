@@ -1,10 +1,12 @@
+using Bradea_Pintiuta_Mariabela_Lab2.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
-using Bradea_Pintiuta_Mariabela_Lab2.Models;
 
 namespace Bradea_Pintiuta_Mariabela_Lab2.Pages.BookPages;
 
+[Authorize(Roles = "Admin")]
 public class DeleteModel : PageModel
 {
     private readonly Bradea_Pintiuta_Mariabela_Lab2Context _context;
@@ -26,6 +28,7 @@ public class DeleteModel : PageModel
 
         var book = await _context.Book
             .Include(b => b.Author)
+            .Include(b => b.Publisher)
             .FirstOrDefaultAsync(m => m.ID == id);
 
         if (book is null)
@@ -34,7 +37,6 @@ public class DeleteModel : PageModel
         }
 
         Book = book;
-
         return Page();
     }
 
@@ -47,10 +49,9 @@ public class DeleteModel : PageModel
 
         var book = await _context.Book.FindAsync(id);
 
-        if (book != null)
+        if (book is not null)
         {
-            Book = book;
-            _context.Book.Remove(Book);
+            _context.Book.Remove(book);
             await _context.SaveChangesAsync();
         }
 
